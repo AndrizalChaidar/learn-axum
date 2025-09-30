@@ -1,5 +1,6 @@
 mod controllers;
 mod errors;
+mod models;
 
 use axum::{Router, extract::FromRef, routing::get, serve};
 use axum_template::engine::Engine;
@@ -10,6 +11,8 @@ use minijinja_autoreload::AutoReloader;
 use sqlx::{Pool, Postgres, postgres::PgPoolOptions};
 use std::{env, path::PathBuf, sync::Arc, time::Duration};
 use tokio::net::TcpListener;
+
+use crate::controllers::get_troops;
 
 type AppEngine = Engine<AutoReloader>;
 
@@ -55,6 +58,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(controllers::get_home))
         .route("/commanders", get(controllers::get_commanders))
+        .route("/troops", get(get_troops))
         .with_state(app_state);
 
     let listener = TcpListener::bind("0.0.0.0:3000")
