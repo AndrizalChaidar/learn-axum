@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button><a href="/">Home</a></button><br>
+    <h1>Commander List</h1>
+    <button><a href="/troops">Troop List</a></button>
+    <table border="1">
+        <tr>
+            <th>No</th>
+            <th>Name</th>
+            <th>Nation</th>
+            <th>Age</th>
+            <th>Military Force</th>
+            <th>Count Troops</th>
+        </tr>
+        {% for el in commanders %}
+        <tr>
+            <td>
+                {{ loop.index }}
+            </td>
+            <td>
+                {{ el.name }}
+            </td>
+            <td>
+                {{ el.nation }}
+            </td>
+            <td>
+                {{ el.age }}
+            </td>
+            <td>
+                {{ el.militaryForce }}
+            </td>
+            <td>
+                {{ el.totalTroops }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
