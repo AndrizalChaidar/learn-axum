@@ -13,10 +13,10 @@
     <h1>Troop List</h1><br>
     <button><a href="/troops/train">Train Troop</a></button><br>
     <form>
-        <select name="CommanderId" id="commander">
+        <select name="commander_id" id="commander">
             <option value="">Choose...</option>
             {% for el in commanders %}
-            <option value="<%= el.id %>">
+            <option value={{ el.id }} {% if el.id==commander_id %}{{ "selected" }}{% endif %}>
                 {{ el.name }}
             </option>
             {% endfor %}

@@ -3,12 +3,13 @@ use crate::{
     errors::ErrorHandler,
     models::{Commander, IdNameCommander, Troop},
 };
-use axum::{extract::State, response::IntoResponse};
+use axum::{extract::{Query, State}, response::IntoResponse};
 use axum_template::RenderHtml;
 use minijinja::context;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, types};
-use std::sync::Arc;
+use uuid::Uuid;
+use std::{collections::HashMap, sync::Arc};
 
 pub type TJson<T> = types::Json<T>;
 
@@ -52,8 +53,15 @@ pub async fn get_commanders(
 }
 
 pub async fn get_troops(
+    Query(param): Query<HashMap<String,String>>,
     State(state): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, ErrorHandler> {
+    let mut commander_id: Option<Uuid> = None;
+    
+    if let Some(param) = param.get("commander_id") && param.len() > 0 {
+        commander_id = Some(Uuid::parse_str(param)?)    
+    }
+
     #[derive(Debug, FromRow, Serialize, Deserialize)]
     struct Result {
         troops: Option<TJson<Vec<Troop>>>,
@@ -68,7 +76,10 @@ pub async fn get_troops(
                     ),
                     troops_cte AS (
                         SELECT t."name" , t.tribe, t."type", t.attack_power, cc.name AS "commander_name" FROM troops t
-                        JOIN commanders_cte cc ON cc.id = t.commander_id
+                        JOIN (
+                            SELECT id, name FROM commanders
+                            WHERE ($1::uuid IS NULL OR id = $1::uuid)
+                        ) cc ON cc.id = t.commander_id
                     )
                     SELECT
                         t.json AS "troops: TJson<Vec<Troop>>",
@@ -79,7 +90,11 @@ pub async fn get_troops(
                     (
                         SELECT json_agg(c) AS "json" FROM commanders_cte c 
                     ) c;
-                "#).fetch_one(&state.db_pool).await?;
+                "#, commander_id).fetch_one(&state.db_pool).await?;
     
-    Ok(RenderHtml("troops.html", state.engine.clone(), result))
+    Ok(RenderHtml("troops.html", state.engine.clone(), context! {
+        troops => result.troops,
+        commanders => result.commanders,
+        commander_id => commander_id
+    }))
 }
