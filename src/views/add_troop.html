@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button><a href="/">Home</a></button><br>
+    <h1>Train Troop</h1>
+    <form action="/troops/train" method="POST">
+        <label for="name">Name</label>
+        <select name="name" id="name">
+            <option value="Phalanx">Phalanx</option>
+            <option value="Teutonic Knight">Teutonic Knight</option>
+            <option value="Theutates Thunder">Theutates Thunder</option>
+            <option value="Equites Imperatoris">Equites Imperatoris</option>
+        </select>
+        <br><br>
+        <p>Tribe:</p>
+          <input type="radio" id="gallia" name="tribe" value="Gallia">
+          <label for="gallia">Gallia</label><br>
+          <input type="radio" id="teuton" name="tribe" value="Teuton">
+          <label for="teuton">Teuton</label><br>
+          <input type="radio" id="roman" name="tribe" value="Roman">
+          <label for="roman">Roman</label>
+        <br><br>
+        <p>Type:</p>
+          <input type="radio" id="Infantry" name="type" value="Infantry">
+          <label for="Infantry">Infantry</label><br>
+          <input type="radio" id="Cavalry" name="type" value="Cavalry">
+          <label for="Cavalry">Cavalry</label><br>
+        <br><br>
+        <label for="Commander">Commander</label>
+        <select name="commander_id" id="Commander">
+            {% for el in commanders %}
+            <option value={{ el.id }}>
+                {{ el.name }}
+            </option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>

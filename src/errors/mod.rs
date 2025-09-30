@@ -6,7 +6,9 @@ pub enum ErrorHandler {
     #[error("sqlx error: {0}")]
     Sqlx(#[from] sqlx::Error),
    #[error("Uuid error: {0}")] 
-    Uuid(#[from] uuid::Error)
+    Uuid(#[from] uuid::Error),
+    #[error("Troop type/tribe error: {0}")]
+    TroopTypeTribe(String)
 }
 
 impl IntoResponse for ErrorHandler {
